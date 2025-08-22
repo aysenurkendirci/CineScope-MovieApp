@@ -2,14 +2,11 @@ import UIKit
 import SnapKit
 
 
-final class LoginButtonCell: UITableViewCell {
-    static let identifier = "LoginButtonCell"
-    
+final class LoginButtonCell: UICollectionViewCell {
     let button = GradientButton(title: "Log In")
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }

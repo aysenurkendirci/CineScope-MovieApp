@@ -1,47 +1,33 @@
 import UIKit
-import SnapKit
 
-final class LoginViewController: UIViewController {
+final class LoginViewController: BaseCollectionViewController<LoginRow> {
     
-    private let tableView = UITableView(frame: .zero, style: .plain)
-    private let viewModel = LoginViewModel()
+    internal let viewModel = LoginViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
+        rows = viewModel.rows
     }
     
-    private func setupTableView() {
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+    override func registerCells() { //cell tipleri overridee
+        register([
+            WelcomeCell.self,
+            EmailCell.self,
+            PasswordCell.self,
+            LoginButtonCell.self,
+            GoogleButtonCell.self,
+            FooterCell.self
+        ])
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView,
+                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = super.collectionView(collectionView, cellForItemAt: indexPath)
+        
+        if let footerCell = cell as? FooterCell {
+            footerCell.delegate = self
         }
-        
-        tableView.separatorStyle = .none
-        tableView.dataSource = self
-        tableView.delegate = self
-        
-
-        tableView.register(WelcomeCell.self, forCellReuseIdentifier: WelcomeCell.identifier)
-        tableView.register(EmailCell.self, forCellReuseIdentifier: EmailCell.identifier)
-        tableView.register(PasswordCell.self, forCellReuseIdentifier: PasswordCell.identifier)
-        tableView.register(LoginButtonCell.self, forCellReuseIdentifier: LoginButtonCell.identifier)
-        tableView.register(GoogleButtonCell.self, forCellReuseIdentifier: GoogleButtonCell.identifier)
-        tableView.register(FooterCell.self, forCellReuseIdentifier: FooterCell.identifier)
-        
-    
-        tableView.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
+        return cell
     }
 }
 
-
-extension LoginViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int { 1 }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.rows.count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = viewModel.rows[indexPath.row]
-        return tableView.dequeueReusableCell(withIdentifier: row.identifier, for: indexPath)
-    }
-}

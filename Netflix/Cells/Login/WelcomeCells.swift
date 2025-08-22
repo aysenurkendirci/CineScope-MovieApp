@@ -1,15 +1,22 @@
 import UIKit
 import SnapKit
 
-final class WelcomeCell: UITableViewCell {
-    static let identifier = "WelcomeCell"
+final class WelcomeCell: UICollectionViewCell {
+    private let titleLabel = UILabel.styled(
+        text: "Welcome back,",
+        font: .boldSystemFont(ofSize: 24)
+    )
     
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
+    private let subtitleLabel = UILabel.styled(
+        text: "Glad to meet you again, please login to use the app.",
+        font: .systemFont(ofSize: 14),
+        color: .darkGray,
+        alignment: .left,
+        lines: 2
+    )
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -18,18 +25,9 @@ final class WelcomeCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(subtitleLabel)
         
-        titleLabel.text = "Welcome back,"
-        titleLabel.font = .boldSystemFont(ofSize: 24)
-        
-        subtitleLabel.text = "Glad to meet you again, please login to use the app."
-        subtitleLabel.font = .systemFont(ofSize: 14)
-        subtitleLabel.textColor = .darkGray
-        subtitleLabel.numberOfLines = 2 //metnin kaç satıra yayılıcağını belirtir
-        
-        //snapkit auto layout kısıtlamalri
-        titleLabel.snp.makeConstraints {//
-            $0.top.equalToSuperview().offset(20) //kısıtlamayı content viewe göre ayarlıyor
-            $0.leading.trailing.equalToSuperview().inset(20)//sol ve sağ kenarlarını, contentView'in sol ve sağ kenarlarına hizalar
+        titleLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
         
         subtitleLabel.snp.makeConstraints {

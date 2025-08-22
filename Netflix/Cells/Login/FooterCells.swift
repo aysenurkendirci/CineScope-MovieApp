@@ -1,15 +1,18 @@
 import UIKit
 import SnapKit
 
-final class FooterCell: UITableViewCell {
-    static let identifier = "FooterCell"
-    
+protocol FooterCellDelegate: AnyObject {
+    func didTapJoinNow()
+}
+
+final class FooterCell: UICollectionViewCell {
+    weak var delegate: FooterCellDelegate?
     private let label = UILabel()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
+        setupTapGesture()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
@@ -23,5 +26,14 @@ final class FooterCell: UITableViewCell {
         label.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(16)
         }
+    }
+    private func setupTapGesture() {
+        label.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(joinNowTapped))
+        label.addGestureRecognizer(tap)
+    }
+
+    @objc private func joinNowTapped() {
+        delegate?.didTapJoinNow()
     }
 }

@@ -7,10 +7,9 @@ final class SplashViewController: UIViewController {
 
       
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            let mainVC = LoginViewController()
-            mainVC.modalTransitionStyle = .crossDissolve
-            mainVC.modalPresentationStyle = .fullScreen
-            self.present(mainVC, animated: true)
+            let loginVC = LoginViewController()
+            self.navigationController?.pushViewController(loginVC, animated: true)
         }
+
     }
 }
