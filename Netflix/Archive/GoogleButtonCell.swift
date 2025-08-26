@@ -1,9 +1,20 @@
-import UIKit
+/*import UIKit
 import SnapKit
+
+protocol GoogleButtonCellViewProtocol {
+    var title: String? { get set }
+}
+
+public class GoogleButtonCellViewModel: GoogleButtonCellViewProtocol {
+    var title: String?
+    init(title: String? = "Log In with Google") {
+        self.title = title
+    }
+}
 
 final class GoogleButtonCell: UICollectionViewCell {
     private let googleButton = UIButton.styled(
-        title: "Log In with Google",
+        title: "",
         titleColor: .black,
         background: .white,
         borderColor: .lightGray,
@@ -19,10 +30,12 @@ final class GoogleButtonCell: UICollectionViewCell {
     private func setupUI() {
         contentView.addSubview(googleButton)
         googleButton.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(12)
-            $0.leading.trailing.equalToSuperview().inset(40)
+            $0.edges.equalToSuperview().inset(16)
             $0.height.equalTo(50)
         }
     }
-}
-
+    
+    func populate(viewModel: GoogleButtonCellViewProtocol) {
+        googleButton.setTitle(viewModel.title, for: .normal)
+    }
+ }*/

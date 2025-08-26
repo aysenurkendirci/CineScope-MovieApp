@@ -1,4 +1,4 @@
-import UIKit
+/*import UIKit
 import SnapKit
 //AnyObject sadece classlar,cell tetiklenince didTapRegister çağırır
 protocol RegisterButtonCellDelegate: AnyObject {
@@ -32,4 +32,4 @@ final class RegisterButtonCell: UICollectionViewCell {
     @objc private func didTap() {
         delegate?.didTapRegister()
     }
-}
+ }*/

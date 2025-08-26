@@ -1,14 +1,37 @@
 import UIKit
 import SnapKit
 
+protocol WelcomeCellViewProtocol {
+    var title: String? { get set }
+    var subtitle: String? { get set }
+}
+
+class WelcomeCellViewModel: WelcomeCellViewProtocol {
+    var title: String?
+    var subtitle: String?
+    
+    init(title: String? = nil, subtitle: String? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+    }
+}
+
 final class WelcomeCell: UICollectionViewCell {
+    
+    var viewModel: WelcomeCellViewProtocol? {
+        didSet { updateUI() }
+    }
+    
+    // handler eklendi
+    var handler: ((String) -> Void)?
+    
     private let titleLabel = UILabel.styled(
-        text: "Welcome back,",
+        text: "",
         font: .boldSystemFont(ofSize: 24)
     )
     
     private let subtitleLabel = UILabel.styled(
-        text: "Glad to meet you again, please login to use the app.",
+        text: "",
         font: .systemFont(ofSize: 14),
         color: .darkGray,
         alignment: .left,
@@ -35,5 +58,10 @@ final class WelcomeCell: UICollectionViewCell {
             $0.leading.trailing.equalTo(titleLabel)
             $0.bottom.equalToSuperview().inset(20)
         }
+    }
+    
+    private func updateUI() {
+        titleLabel.text = viewModel?.title
+        subtitleLabel.text = viewModel?.subtitle
     }
 }
