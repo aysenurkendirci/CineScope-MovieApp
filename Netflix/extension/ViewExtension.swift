@@ -7,8 +7,7 @@
 
 import Foundation
 import UIKit
-
-// MARK: - UIButton Styling
+ //Cellerin içinde
 extension UIButton {
     static func styled(title: String,
                        titleColor: UIColor = .white,
@@ -29,7 +28,6 @@ extension UIButton {
     }
 }
 
-// MARK: - UILabel Styling
 extension UILabel {
     static func styled(text: String,
                        font: UIFont = .systemFont(ofSize: 14),
@@ -44,4 +42,5 @@ extension UILabel {
         label.numberOfLines = lines
         return label
     }
+    
 }
