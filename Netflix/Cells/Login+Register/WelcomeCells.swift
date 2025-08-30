@@ -1,42 +1,14 @@
 import UIKit
 import SnapKit
 
-protocol WelcomeCellViewProtocol {
-    var title: String? { get set }
-    var subtitle: String? { get set }
-}
-
-class WelcomeCellViewModel: WelcomeCellViewProtocol {
-    var title: String?
-    var subtitle: String?
-    
-    init(title: String? = nil, subtitle: String? = nil) {
-        self.title = title
-        self.subtitle = subtitle
-    }
+struct WelcomeCellViewModel {
+    let title: String
+    let subtitle: String
 }
 
 final class WelcomeCell: UICollectionViewCell {
-    
-    var viewModel: WelcomeCellViewProtocol? {
-        didSet { updateUI() }
-    }
-    
-    // handler eklendi
-    var handler: ((String) -> Void)?
-    
-    private let titleLabel = UILabel.styled(
-        text: "",
-        font: .boldSystemFont(ofSize: 24)
-    )
-    
-    private let subtitleLabel = UILabel.styled(
-        text: "",
-        font: .systemFont(ofSize: 14),
-        color: .darkGray,
-        alignment: .left,
-        lines: 2
-    )
+     let titleLabel = UILabel()
+     let subtitleLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -48,20 +20,26 @@ final class WelcomeCell: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(subtitleLabel)
         
+        titleLabel.numberOfLines = 0   // EKLE
+        subtitleLabel.numberOfLines = 0 // EKLE
+
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.leading.trailing.equalToSuperview().inset(16)
+        }
+        subtitleLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(6)
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
         
-        subtitleLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-            $0.leading.trailing.equalTo(titleLabel)
-            $0.bottom.equalToSuperview().inset(20)
-        }
+        titleLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        titleLabel.textColor = .white
+        
+        subtitleLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        subtitleLabel.textColor = .lightGray
     }
     
-    private func updateUI() {
-        titleLabel.text = viewModel?.title
-        subtitleLabel.text = viewModel?.subtitle
+    func configure(with model: WelcomeCellViewModel) {
+        titleLabel.text = model.title
+        subtitleLabel.text = model.subtitle
     }
 }

@@ -1,13 +1,5 @@
-//
-//  ViewExtension.swift
-//  Netflix
-//
-//  Created by Ayşe Nur Kendirci on 22.08.2025.
-//
-
-import Foundation
 import UIKit
- //Cellerin içinde
+
 extension UIButton {
     static func styled(title: String,
                        titleColor: UIColor = .white,
@@ -42,5 +34,4 @@ extension UILabel {
         label.numberOfLines = lines
         return label
     }
-    
 }

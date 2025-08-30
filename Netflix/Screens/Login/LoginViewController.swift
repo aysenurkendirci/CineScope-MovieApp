@@ -1,33 +1,112 @@
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
-final class LoginViewController: BaseCollectionViewController<LoginRow> {
+final class LoginViewController: BaseCollectionViewController {
     
-    internal let viewModel = LoginViewModel()
+    let viewModel = LoginViewModel()
+    
+    private var headerSection = Section()
+    private var inputSection = Section()
+    private var actionSection = Section()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        rows = viewModel.rows
+        navigationItem.hidesBackButton = true
+        buildUI()
     }
     
-    override func registerCells() { //cell tipleri overridee
+    private func buildUI() {
+        headerSection.rows = []
+        inputSection.rows = []
+        actionSection.rows = []
+
+        
+        addWelcomeMessage()
+        addEmailInput()
+        addPasswordInput()
+        addLoginButton()
+        addGoogleLoginButton()
+        addFooter()
+        
+        collectionSections = [headerSection, inputSection, actionSection]
+        collectionView.reloadData()
+    }
+    
+    private func addWelcomeMessage() {
+        let vm = WelcomeCellViewModel(
+            title: "Welcome back,",
+            subtitle: "Glad to see you again, please login."
+        )
+        headerSection.rows?.append(vm)
+    }
+    
+    private func addEmailInput() {
+        var vm = InputCellViewModel(
+            key: "email",
+            systemIcon: "envelope",
+            placeholder: "Email",
+            isSecure: false,
+            onTextChanged: nil
+        )
+        vm.onTextChanged = { [weak self] text in
+            self?.viewModel.email = text
+        }
+        inputSection.rows?.append(vm)
+    }
+    
+    private func addPasswordInput() {
+        var vm = InputCellViewModel(
+            key: "password",
+            systemIcon: "lock",
+            placeholder: "Password",
+            isSecure: true,
+            onTextChanged: nil
+        )
+        vm.onTextChanged = { [weak self] text in
+            self?.viewModel.password = text
+        }
+        inputSection.rows?.append(vm)
+    }
+    
+    private func addLoginButton() {
+        let vm = ButtonCellViewModel(
+            title: "Log In",
+            titleColor: .white,
+            gradientColors: [UIColor.systemOrange, UIColor.systemPurple],
+            onTap: { [weak self] in self?.didTapLogin() }
+        )
+        actionSection.rows?.append(vm)
+    }
+    
+    private func addGoogleLoginButton() {
+        let vm = ButtonCellViewModel(
+            title: "Log In with Google",
+            titleColor: .black,
+            gradientColors: nil,
+            borderColor: .systemGray4,
+            borderWidth: 1,
+            cornerRadius: 8,
+            onTap: { [weak self] in self?.didTapGoogleLogin() }
+        )
+        actionSection.rows?.append(vm)
+    }
+    
+    private func addFooter() {
+        var vm = FooterCellViewModel(text: "Don’t have an account? Join Now")
+        vm.onTap = { [weak self] in
+            let registerVC = RegisterViewController()
+            self?.navigationController?.pushViewController(registerVC, animated: true)
+        }
+        actionSection.rows?.append(vm)
+    }
+  
+    override func registerCells() {
         register([
             WelcomeCell.self,
-            EmailCell.self,
-            PasswordCell.self,
-            LoginButtonCell.self,
-            GoogleButtonCell.self,
+            InputCell.self,
+            ButtonCell.self,
             FooterCell.self
         ])
     }
-    
-    override func collectionView(_ collectionView: UICollectionView,
-                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = super.collectionView(collectionView, cellForItemAt: indexPath)
-        
-        if let footerCell = cell as? FooterCell {
-            footerCell.delegate = self
-        }
-        return cell
-    }
 }
-

@@ -1,26 +1,20 @@
 import UIKit
 import SnapKit
 
-protocol ButtonCellDelegate: AnyObject {
-    func didTapButton(_ cell: ButtonCell)
-}
-
 struct ButtonCellViewModel {
     var title: String
-    var backgroundColor: UIColor
     var titleColor: UIColor
+    var gradientColors: [UIColor]?
     var borderColor: UIColor? = nil
     var borderWidth: CGFloat = 0
     var cornerRadius: CGFloat = 8
+    var onTap: (() -> Void)?
 }
 
 final class ButtonCell: UICollectionViewCell {
-    weak var delegate: ButtonCellDelegate?
-    var viewModel: ButtonCellViewModel? {
-        didSet { updateUI() }
-    }
-    
-    private let button = UIButton(type: .system)
+    private let button = UIButton(type: .custom)
+    private let gradientLayer = CAGradientLayer()
+    private var handler: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,24 +25,54 @@ final class ButtonCell: UICollectionViewCell {
     private func setupUI() {
         contentView.addSubview(button)
         button.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(16)
-            $0.height.equalTo(50)
+            $0.top.bottom.equalToSuperview().inset(8)   // üst/alt 8
+            $0.leading.trailing.equalToSuperview().inset(16) // yanlarda 16
         }
-        button.layer.cornerRadius = 8
+
+        
         button.addTarget(self, action: #selector(didTap), for: .touchUpInside)
+        button.layer.masksToBounds = true
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        button.layer.insertSublayer(gradientLayer, at: 0)
     }
     
-    private func updateUI() {
-        guard let vm = viewModel else { return }
-        button.setTitle(vm.title, for: .normal)
-        button.backgroundColor = vm.backgroundColor
-        button.setTitleColor(vm.titleColor, for: .normal)
-        button.layer.cornerRadius = vm.cornerRadius
-        button.layer.borderColor = vm.borderColor?.cgColor
-        button.layer.borderWidth = vm.borderWidth
+    func configure(with model: ButtonCellViewModel) {
+        button.setTitle(model.title, for: .normal)
+        button.setTitleColor(model.titleColor, for: .normal)
+        button.layer.cornerRadius = model.cornerRadius
+        
+        // Eğer gradient verilmişse uygula
+        if let colors = model.gradientColors {
+            gradientLayer.isHidden = false
+            gradientLayer.colors = colors.map { $0.cgColor }
+            button.backgroundColor = .clear
+        } else {
+            gradientLayer.isHidden = true
+            button.backgroundColor = .white
+        }
+        
+        // Border (Google Login gibi butonlarda)
+        if let borderColor = model.borderColor {
+            button.layer.borderColor = borderColor.cgColor
+            button.layer.borderWidth = model.borderWidth
+        } else {
+            button.layer.borderWidth = 0
+        }
+        
+        handler = model.onTap
+        setNeedsLayout()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = button.bounds
     }
     
     @objc private func didTap() {
-        delegate?.didTapButton(self)
+        print("Button tapped:", button.currentTitle ?? "")
+        handler?()
     }
 }

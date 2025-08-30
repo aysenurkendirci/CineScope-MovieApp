@@ -1,18 +1,16 @@
 enum LoginRow: RowIdentifiable {
-    case welcome
-    case email
-    case password
-    case loginButton
-    case googleButton
-    case footer
+    case welcome(WelcomeCellViewModel)
+    case email(InputCellViewModel)
+    case password(InputCellViewModel)
+    case loginButton(ButtonCellViewModel)
+    case googleButton(ButtonCellViewModel)
+    case footer(FooterCellViewModel)
     
     var identifier: String {
         switch self {
         case .welcome: return String(describing: WelcomeCell.self)
-        case .email: return String(describing: EmailCell.self)
-        case .password: return String(describing: PasswordCell.self)
-        case .loginButton: return String(describing: LoginButtonCell.self)
-        case .googleButton: return String(describing: GoogleButtonCell.self)
+        case .email, .password: return String(describing: InputCell.self)
+        case .loginButton, .googleButton: return String(describing: ButtonCell.self)
         case .footer: return String(describing: FooterCell.self)
         }
     }

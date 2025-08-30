@@ -1,28 +1,13 @@
 import UIKit
-import SnapKit
+import UIKit
 
-protocol FooterCellDelegate: AnyObject {
-    func didTapJoinNow()
+struct FooterCellViewModel {
+    let text: String
+    var onTap: (() -> Void)?
 }
-
-protocol FooterCellViewProtocol {
-    var text: String? { get set }
-}
-
-class FooterCellViewModel: FooterCellViewProtocol {
-    var text: String?
-    init(text: String? = "Don’t have an account? Join Now") {
-        self.text = text
-    }
-}
-
 final class FooterCell: UICollectionViewCell {
-    weak var delegate: FooterCellDelegate?
-    var viewModel: FooterCellViewProtocol? {
-        didSet { updateUI() }
-    }
-    
     private let label = UILabel()
+    private var onTap: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,21 +21,19 @@ final class FooterCell: UICollectionViewCell {
         label.font = .systemFont(ofSize: 14)
         label.textAlignment = .center
         label.textColor = .darkGray
-        label.snp.makeConstraints { $0.edges.equalToSuperview().inset(16) }
+        label.numberOfLines = 0
+        label.snp.makeConstraints { $0.edges.equalToSuperview().inset(8) }
     }
     
-    private func updateUI() {
-        label.text = viewModel?.text
+    func configure(with model: FooterCellViewModel) {
+        label.text = model.text
+        self.onTap = model.onTap
     }
     
     private func setupTapGesture() {
         label.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(joinNowTapped))
-        label.addGestureRecognizer(tap)
+        label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped)))
     }
     
-    @objc private func joinNowTapped() {
-        delegate?.didTapJoinNow()
-    }
+    @objc private func tapped() { onTap?() }
 }
-

@@ -1,4 +1,4 @@
-import UIKit
+/*import UIKit
 import FirebaseAuth
 import FirebaseFirestore
 
@@ -46,4 +46,4 @@ extension LoginViewController {
         alert.addAction(UIAlertAction(title: "Tamam", style: .default))
         present(alert, animated: true)
     }
-}
+ }*/
