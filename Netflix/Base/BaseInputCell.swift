@@ -38,4 +38,4 @@ class BaseInputCell: UICollectionViewCell {
         textField.placeholder = placeholder
         textField.isSecureTextEntry = isSecure
     }
-}
+ }
