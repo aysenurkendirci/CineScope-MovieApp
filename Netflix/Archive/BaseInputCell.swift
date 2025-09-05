@@ -1,4 +1,4 @@
-import UIKit
+/*import UIKit
 import SnapKit
 
 class BaseInputCell: UICollectionViewCell {
@@ -38,4 +38,4 @@ class BaseInputCell: UICollectionViewCell {
         textField.placeholder = placeholder
         textField.isSecureTextEntry = isSecure
     }
- }
+ }*/
