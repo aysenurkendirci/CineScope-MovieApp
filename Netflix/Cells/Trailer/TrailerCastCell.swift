@@ -1,8 +1,14 @@
 import UIKit
 import SnapKit
 
-struct TrailerCastViewModel {
+struct TrailerCastViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: TrailerCastCell.self) }
+
     let cast: [Cast]
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? TrailerCastCell)?.configure(with: self)
+    }
 }
 
 final class TrailerCastCell: UICollectionViewCell,
@@ -16,7 +22,8 @@ final class TrailerCastCell: UICollectionViewCell,
     override init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 20
+        layout.minimumLineSpacing = 12
+        layout.minimumInteritemSpacing = 12
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         super.init(frame: frame)
         setupUI()
@@ -45,7 +52,7 @@ final class TrailerCastCell: UICollectionViewCell,
         }
         
         collectionView.snp.makeConstraints { make in
-            make.height.equalTo(300)
+            make.height.equalTo(160) // sabit yükseklik
         }
     }
     
@@ -53,7 +60,8 @@ final class TrailerCastCell: UICollectionViewCell,
         self.cast = vm.cast
         collectionView.reloadData()
     }
- 
+    
+    // MARK: - DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         cast.count
     }
@@ -64,14 +72,20 @@ final class TrailerCastCell: UICollectionViewCell,
         cell.configure(with: cast[indexPath.row])
         return cell
     }
- 
+    
+    // MARK: - Layout
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 120, height: 160)
+        let visibleItems: CGFloat = 3 // aynı anda 3 oyuncu görünsün
+        let spacing: CGFloat = 12
+        let totalSpacing = (visibleItems - 1) * spacing
+        let availableWidth = collectionView.bounds.width - totalSpacing
+        let cellWidth = floor(availableWidth / visibleItems)
+        
+        return CGSize(width: cellWidth, height: 150)
     }
 }
-
 final class CastItemCell: UICollectionViewCell {
     
     private let imageView = UIImageView()
@@ -87,29 +101,33 @@ final class CastItemCell: UICollectionViewCell {
     private func setupUI() {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 50
-        imageView.layer.masksToBounds = true
+        imageView.backgroundColor = .darkGray
+        contentView.addSubview(imageView)
         
         nameLabel.font = .systemFont(ofSize: 14, weight: .medium)
         nameLabel.textColor = .white
         nameLabel.textAlignment = .center
         nameLabel.numberOfLines = 2
-        
-        let stack = UIStackView(arrangedSubviews: [imageView, nameLabel])
-        stack.axis = .vertical
-        stack.alignment = .leading
-        stack.spacing = 8
-
-        stack.spacing = 8
-        contentView.addSubview(stack)
-        
-        stack.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        nameLabel.adjustsFontSizeToFitWidth = true
+        nameLabel.minimumScaleFactor = 0.7
+        contentView.addSubview(nameLabel)
         
         imageView.snp.makeConstraints { make in
-            make.width.height.equalTo(100)
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(80)
         }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalTo(imageView.snp.bottom).offset(6)
+            make.left.right.equalToSuperview().inset(4)
+            make.height.equalTo(36)
+        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageView.layer.cornerRadius = imageView.frame.width / 2
     }
     
     func configure(with cast: Cast) {

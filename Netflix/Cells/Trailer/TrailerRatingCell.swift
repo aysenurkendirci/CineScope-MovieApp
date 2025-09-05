@@ -1,10 +1,16 @@
 import UIKit
 import SnapKit
 
-struct TrailerRatingViewModel {
+struct TrailerRatingViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: TrailerRatingCell.self) }
+
     let average: Double
     let totalReviews: Int
     let breakdown: [Int: Int]
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? TrailerRatingCell)?.configure(with: self)
+    }
 }
 
 final class TrailerRatingCell: UICollectionViewCell {

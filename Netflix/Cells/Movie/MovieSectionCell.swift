@@ -1,21 +1,27 @@
 import UIKit
 import SnapKit
 
+struct MovieSectionViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: MovieSectionCell.self) }
+
+    let title: String
+    let movies: [Movie]
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? MovieSectionCell)?.configure(with: self)
+    }
+}
+
 protocol MovieSectionCellDelegate: AnyObject {
     func didSelectMovie(_ movie: Movie)
 }
-
-struct MovieSectionViewModel {
-    let title: String
-    let movies: [Movie]
-}
-
 
 final class MovieSectionCell: UICollectionViewCell,
                               UICollectionViewDataSource,
                               UICollectionViewDelegateFlowLayout {
     
     weak var delegate: MovieSectionCellDelegate?
+    
     private let titleLabel = UILabel()
     private let collectionView: UICollectionView
     private var movies: [Movie] = []
@@ -49,6 +55,7 @@ final class MovieSectionCell: UICollectionViewCell,
         stack.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(8)
         }
+        
         collectionView.snp.makeConstraints { make in
             make.height.equalTo(250)
         }
@@ -60,17 +67,30 @@ final class MovieSectionCell: UICollectionViewCell,
         collectionView.reloadData()
     }
     
+    // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         movies.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCell", for: indexPath) as! MovieCell
-        cell.configure(with: MovieCellViewModel(movie: movies[indexPath.row]))
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "MovieCell",
+            for: indexPath
+        ) as! MovieCell
+        
+        let movie = movies[indexPath.row]
+        let vm = MovieCellViewModel(
+            id: movie.id,
+            title: movie.title,
+            posterURL: movie.posterURL,
+            year: movie.release_date
+        )
+        cell.configure(with: vm)
         return cell
     }
     
+    // MARK: - UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -79,6 +99,6 @@ final class MovieSectionCell: UICollectionViewCell,
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let movie = movies[indexPath.row]
-        delegate?.didSelectMovie(movie) // ✅ seçilen filmi dışarı bildir
+        delegate?.didSelectMovie(movie)
     }
 }

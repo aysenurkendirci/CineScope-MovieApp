@@ -2,8 +2,14 @@ import UIKit
 import SnapKit
 import WebKit
 
-struct TrailerVideoViewModel {
+struct TrailerVideoViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: TrailerVideoCell.self) }
+
     let trailerURL: String
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? TrailerVideoCell)?.configure(with: self)
+    }
 }
 
 final class TrailerVideoCell: UICollectionViewCell {

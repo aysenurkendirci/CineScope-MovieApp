@@ -1,9 +1,15 @@
 import UIKit
 import SnapKit
 
-struct WelcomeCellViewModel {
+struct WelcomeCellViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: WelcomeCell.self) }
+
     let title: String
     let subtitle: String
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? WelcomeCell)?.configure(with: self)
+    }
 }
 
 final class WelcomeCell: UICollectionViewCell {
@@ -20,8 +26,8 @@ final class WelcomeCell: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(subtitleLabel)
         
-        titleLabel.numberOfLines = 0   // EKLE
-        subtitleLabel.numberOfLines = 0 // EKLE
+        titleLabel.numberOfLines = 0
+        subtitleLabel.numberOfLines = 0
 
         titleLabel.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview().inset(16)

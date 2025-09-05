@@ -8,10 +8,8 @@ final class AuthService {
     
     static let shared = AuthService()
     private init() {}
-    
     private let db = Firestore.firestore()
     
-    // MARK: - Register with Email
     func register(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
         print("Register attempt with email=\(email)")
         

@@ -9,7 +9,6 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func setupTabs() {
-     
         let homeVC = HomeViewController()
         let homeNav = UINavigationController(rootViewController: homeVC)
         homeNav.tabBarItem = UITabBarItem(
@@ -26,7 +25,8 @@ final class MainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "magnifyingglass")
         )
 
-        let trailerVC = TrailerViewController(movieId: 414906) // Batman ID
+    
+        let trailerVC = TrailerViewController(movieId: nil)
         let trailerNav = UINavigationController(rootViewController: trailerVC)
         trailerNav.tabBarItem = UITabBarItem(
             title: "Trailer",
@@ -34,6 +34,7 @@ final class MainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "play.rectangle.fill")
         )
 
+    
         let profileVC = ProfileViewController()
         let profileNav = UINavigationController(rootViewController: profileVC)
         profileNav.tabBarItem = UITabBarItem(
@@ -42,6 +43,7 @@ final class MainTabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "person.fill")
         )
 
+    
         viewControllers = [homeNav, searchNav, trailerNav, profileNav]
     }
 

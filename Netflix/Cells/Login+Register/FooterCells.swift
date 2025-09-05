@@ -1,10 +1,17 @@
 import UIKit
 import UIKit
 
-struct FooterCellViewModel {
+struct FooterCellViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: FooterCell.self) }
+
     let text: String
     var onTap: (() -> Void)?
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? FooterCell)?.configure(with: self)
+    }
 }
+
 final class FooterCell: UICollectionViewCell {
     private let label = UILabel()
     private var onTap: (() -> Void)?

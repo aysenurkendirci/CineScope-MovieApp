@@ -30,7 +30,7 @@ final class LoginViewController: BaseCollectionViewController {
         addFooter()
         
         collectionSections = [headerSection, inputSection, actionSection]
-        collectionView.reloadData()
+        baseView.collectionView.reloadData()
     }
     
     private func addWelcomeMessage() {
@@ -38,7 +38,7 @@ final class LoginViewController: BaseCollectionViewController {
             title: "Welcome back,",
             subtitle: "Glad to see you again, please login."
         )
-        headerSection.rows?.append(vm)
+        headerSection.rows.append(vm)
     }
     
     private func addEmailInput() {
@@ -52,7 +52,7 @@ final class LoginViewController: BaseCollectionViewController {
         vm.onTextChanged = { [weak self] text in
             self?.viewModel.email = text
         }
-        inputSection.rows?.append(vm)
+        inputSection.rows.append(vm)
     }
     
     private func addPasswordInput() {
@@ -66,7 +66,7 @@ final class LoginViewController: BaseCollectionViewController {
         vm.onTextChanged = { [weak self] text in
             self?.viewModel.password = text
         }
-        inputSection.rows?.append(vm)
+        inputSection.rows.append(vm)
     }
     
     private func addLoginButton() {
@@ -76,7 +76,7 @@ final class LoginViewController: BaseCollectionViewController {
             gradientColors: [UIColor.systemOrange, UIColor.systemPurple],
             onTap: { [weak self] in self?.didTapLogin() }
         )
-        actionSection.rows?.append(vm)
+        actionSection.rows.append(vm)
     }
     
     private func addGoogleLoginButton() {
@@ -89,7 +89,7 @@ final class LoginViewController: BaseCollectionViewController {
             cornerRadius: 8,
             onTap: { [weak self] in self?.didTapGoogleLogin() }
         )
-        actionSection.rows?.append(vm)
+        actionSection.rows.append(vm)
     }
     
     private func addFooter() {
@@ -98,7 +98,7 @@ final class LoginViewController: BaseCollectionViewController {
             let registerVC = RegisterViewController()
             self?.navigationController?.pushViewController(registerVC, animated: true)
         }
-        actionSection.rows?.append(vm)
+        actionSection.rows.append(vm)
     }
   
     override func registerCells() {

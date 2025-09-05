@@ -1,63 +1,61 @@
 import UIKit
 import SnapKit
+import SDWebImage
 
-struct MovieCellViewModel {
-    let movie: Movie
+struct MovieCellViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: MovieCell.self) }
+
+    let id: Int
+    let title: String
+    let posterURL: String?
+    let year: String?
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? MovieCell)?.configure(with: self)
+    }
 }
 
 final class MovieCell: UICollectionViewCell {
-    
     private let posterImageView = UIImageView()
     private let titleLabel = UILabel()
-    private let yearLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
     }
-    
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required init?(coder: NSCoder) { fatalError("init(coder:) not implemented") }
     
     private func setupUI() {
-        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.layer.cornerRadius = 8
         posterImageView.clipsToBounds = true
-        posterImageView.layer.cornerRadius = 12
+        posterImageView.contentMode = .scaleAspectFill
         
         titleLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 2
+        titleLabel.textAlignment = .center
         
-        yearLabel.font = .systemFont(ofSize: 12, weight: .light)
-        yearLabel.textColor = .lightGray
-        
-        let stack = UIStackView(arrangedSubviews: [posterImageView, titleLabel, yearLabel])
-        stack.axis = .vertical
-        stack.spacing = 4
-        contentView.addSubview(stack)
-        
-        stack.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        contentView.addSubview(posterImageView)
+        contentView.addSubview(titleLabel)
         
         posterImageView.snp.makeConstraints { make in
-            make.height.equalTo(180)
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(posterImageView.snp.width).multipliedBy(1.5)
+        }
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(posterImageView.snp.bottom).offset(4)
+            make.leading.trailing.bottom.equalToSuperview().inset(4)
         }
     }
-    func configure(with model: MovieCellViewModel) {
-        titleLabel.text = model.movie.title
-        yearLabel.text = model.movie.year
-        
-        if let urlString = model.movie.posterURL, let url = URL(string: urlString) {
-            URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
-                if let data = data, let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.posterImageView.image = image
-                    }
-                }
-            }.resume()
+    
+    func configure(with vm: MovieCellViewModel) {
+        titleLabel.text = vm.title
+        if let urlStr = vm.posterURL, let url = URL(string: urlStr) {
+            posterImageView.sd_setImage(with: url,
+                                        placeholderImage: UIImage(systemName: "film"))
         } else {
-            posterImageView.image = nil
-            posterImageView.backgroundColor = .red
+            posterImageView.image = UIImage(systemName: "film")
+            posterImageView.tintColor = .gray
         }
     }
 }

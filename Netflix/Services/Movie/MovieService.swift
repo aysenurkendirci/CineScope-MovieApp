@@ -4,7 +4,7 @@ final class MovieService {
     static let shared = MovieService()
     
     private init() {}
-    
+
     func getPopularMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
         NetworkProvider.shared.request(.popular) { result in
             switch result {
@@ -20,7 +20,6 @@ final class MovieService {
             }
         }
     }
-    
     func getNowPlayingMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
         NetworkProvider.shared.request(.nowPlaying) { result in
             switch result {
@@ -36,9 +35,40 @@ final class MovieService {
             }
         }
     }
-    
     func getUpcomingMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
         NetworkProvider.shared.request(.upcoming) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(MovieResponse.self, from: response.data)
+                    completion(.success(decoded.results))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    func getMovieDetail(id: Int, completion: @escaping (Result<MovieDetail, Error>) -> Void) {
+        NetworkProvider.shared.request(.detail(movieId: id)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode(MovieDetail.self, from: response.data)
+                    completion(.success(decoded))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+extension MovieService {
+    func searchMovies(query: String, completion: @escaping (Result<[Movie], Error>) -> Void) {
+        NetworkProvider.shared.request(.search(query: query)) { result in
             switch result {
             case .success(let response):
                 do {

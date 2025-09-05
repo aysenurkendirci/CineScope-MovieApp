@@ -1,4 +1,4 @@
-import UIKit
+/*import UIKit
 import SnapKit
 
 struct FavoritesSectionViewModel {
@@ -78,4 +78,4 @@ final class FavoritesSectionCell: UICollectionViewCell,
         let height = collectionView.collectionViewLayout.collectionViewContentSize.height
         return CGSize(width: targetSize.width, height: height)
     }
-}
+ }*/

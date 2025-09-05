@@ -5,3 +5,4 @@ struct NetworkProvider {
         plugins: [NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))]
     )
 }
+//.verbase ayrıntı için

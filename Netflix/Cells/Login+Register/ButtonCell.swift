@@ -1,7 +1,9 @@
 import UIKit
 import SnapKit
 
-struct ButtonCellViewModel {
+struct ButtonCellViewModel: CellConfigurator {
+    static var reuseId: String { String(describing: ButtonCell.self) }
+
     var title: String
     var titleColor: UIColor
     var gradientColors: [UIColor]?
@@ -9,6 +11,10 @@ struct ButtonCellViewModel {
     var borderWidth: CGFloat = 0
     var cornerRadius: CGFloat = 8
     var onTap: (() -> Void)?
+
+    func configure(cell: UICollectionViewCell) {
+        (cell as? ButtonCell)?.configure(with: self)
+    }
 }
 
 final class ButtonCell: UICollectionViewCell {
@@ -25,8 +31,8 @@ final class ButtonCell: UICollectionViewCell {
     private func setupUI() {
         contentView.addSubview(button)
         button.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(8)   // üst/alt 8
-            $0.leading.trailing.equalToSuperview().inset(16) // yanlarda 16
+            $0.top.bottom.equalToSuperview().inset(8)   
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
 
         

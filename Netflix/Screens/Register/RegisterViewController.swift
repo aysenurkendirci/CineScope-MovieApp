@@ -24,7 +24,7 @@ final class RegisterViewController: BaseCollectionViewController {
         addFooter()
         
         collectionSections = [inputSection, actionSection]
-        collectionView.reloadData()
+        baseView.collectionView.reloadData()
     }
     
     private func addEmailInput() {
@@ -38,7 +38,7 @@ final class RegisterViewController: BaseCollectionViewController {
         vm.onTextChanged = { [weak self] text in
             self?.viewModel.email = text
         }
-        inputSection.rows?.append(vm)
+        inputSection.rows.append(vm)
     }
     
     private func addPasswordInput() {
@@ -52,7 +52,7 @@ final class RegisterViewController: BaseCollectionViewController {
         vm.onTextChanged = { [weak self] text in
             self?.viewModel.password = text
         }
-        inputSection.rows?.append(vm)
+        inputSection.rows.append(vm)
     }
     
     private func addRegisterButton() {
@@ -62,7 +62,7 @@ final class RegisterViewController: BaseCollectionViewController {
             gradientColors: [UIColor.systemGreen, UIColor.systemTeal],
             onTap: { [weak self] in self?.performRegistration() }
         )
-        actionSection.rows?.append(vm)
+        actionSection.rows.append(vm)
     }
     
     private func addFooter() {
@@ -70,7 +70,7 @@ final class RegisterViewController: BaseCollectionViewController {
         vm.onTap = { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }
-        actionSection.rows?.append(vm)
+        actionSection.rows.append(vm)
     }
     
     override func registerCells() {

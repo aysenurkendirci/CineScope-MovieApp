@@ -10,8 +10,25 @@ final class HomeViewController: BaseCollectionViewController {
   
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
+        setupSearchButton()
         buildUI()
         fetchData()
+    }
+    
+    private func setupSearchButton() {
+        let searchButton = UIBarButtonItem(
+            image: UIImage(systemName: "magnifyingglass"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapSearch)
+        )
+        searchButton.tintColor = .white
+        navigationItem.rightBarButtonItem = searchButton
+    }
+    
+    @objc private func didTapSearch() {
+        tabBarController?.selectedIndex = 1
     }
     
     private func buildUI() {
@@ -26,22 +43,28 @@ final class HomeViewController: BaseCollectionViewController {
         addUpcomingMovies()
         
         collectionSections = [popularSection, nowPlayingSection, upcomingSection]
-        collectionView.reloadData()
+        baseView.collectionView.reloadData()
     }
     
     private func addPopularMovies() {
-        let vm = MovieSectionViewModel(title: "Popüler Filmler", movies: viewModel.popularMovies)
-        popularSection.rows?.append(vm)
+        let vm = MovieSectionViewModel(
+            title: "Popüler Filmler",
+            movies: viewModel.popularMovies)
+        popularSection.rows.append(vm)
     }
     
     private func addNowPlayingMovies() {
-        let vm = MovieSectionViewModel(title: "Vizyondakiler", movies: viewModel.nowPlayingMovies)
-        nowPlayingSection.rows?.append(vm)
+        let vm = MovieSectionViewModel(
+            title: "Vizyondakiler",
+            movies: viewModel.nowPlayingMovies)
+        nowPlayingSection.rows.append(vm)
     }
 
     private func addUpcomingMovies() {
-        let vm = MovieSectionViewModel(title: "Yakında", movies: viewModel.upcomingMovies)
-        upcomingSection.rows?.append(vm)
+        let vm = MovieSectionViewModel(
+            title: "Yakında",
+            movies: viewModel.upcomingMovies)
+        upcomingSection.rows.append(vm)
     }
     
     private func fetchData() {
@@ -57,11 +80,10 @@ final class HomeViewController: BaseCollectionViewController {
         ])
     }
     
-    // ✅ Cell oluştururken delegate’i bağla
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let section = collectionSections[indexPath.section]
-        if let vm = section.rows?[indexPath.row] as? MovieSectionViewModel {
+        if let vm = section.rows[indexPath.row] as? MovieSectionViewModel {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: String(describing: MovieSectionCell.self),
                 for: indexPath
@@ -74,11 +96,20 @@ final class HomeViewController: BaseCollectionViewController {
     }
 }
 
-// MARK: - Delegate Implementation
 extension HomeViewController: MovieSectionCellDelegate {
     func didSelectMovie(_ movie: Movie) {
-        let trailerVC = TrailerViewController(movieId: movie.id)
-        navigationController?.pushViewController(trailerVC, animated: true)
+        guard let tabBarController = tabBarController,
+              let viewControllers = tabBarController.viewControllers,
+              viewControllers.count > 2,
+              let trailerNav = viewControllers[2] as? UINavigationController else {
+            return
+        }
+        if trailerNav.viewControllers.first is TrailerViewController {
+            let trailerVC = TrailerViewController(movieId: movie.id)
+            tabBarController.selectedIndex = 2
+            trailerNav.popToRootViewController(animated: false)
+            trailerNav.pushViewController(trailerVC, animated: true)
+        }
     }
 }
 

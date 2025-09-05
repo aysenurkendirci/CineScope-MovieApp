@@ -9,13 +9,14 @@ enum MovieAPI {
     case detail(movieId: Int)
     case credits(movieId: Int)
     case videos(movieId: Int)
+    case search(query: String)
 }
 
 extension MovieAPI: TargetType {
+
     var baseURL: URL {
-        URL(string: "https://api.themoviedb.org/3")!
+        return URL(string: "https://api.themoviedb.org/3")!
     }
-    
     var path: String {
         switch self {
         case .popular:
@@ -30,21 +31,32 @@ extension MovieAPI: TargetType {
             return "/movie/\(id)/credits"
         case .videos(let id):
             return "/movie/\(id)/videos"
+        case .search:
+            return "/search/movie"
         }
     }
     
-    var method: Moya.Method { .get }
-    
+    var method: Moya.Method {
+        return .get
+    }
+
     var task: Task {
         let apiKey = "0b5ecf3c47cb1d15c596f71aa6d536f1"
-        let params: [String: Any] = [
+        var params: [String: Any] = [
             "api_key": apiKey,
             "language": "tr-TR"
         ]
-        return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        
+        switch self {
+        case .search(let query):
+            params["query"] = query
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        default:
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
+        }
     }
-    
+
     var headers: [String : String]? {
-        ["Content-Type": "application/json"]
+        return ["Content-Type": "application/json"]
     }
 }

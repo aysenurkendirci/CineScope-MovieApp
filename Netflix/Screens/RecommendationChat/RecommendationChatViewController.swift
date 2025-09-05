@@ -17,7 +17,6 @@ final class RecommendationChatViewController: BaseCollectionViewController {
     private let moodStack = UIStackView()
     private let moods = ["Neşeli", "Üzgün", "Korku", "Romantik", "Heyecanlı"]
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Asistan"
@@ -30,19 +29,17 @@ final class RecommendationChatViewController: BaseCollectionViewController {
         viewModel.bootstrapIfNeeded()
         buildUI()
 
-        // Keyboard
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(kbChange(_:)),
                                                name: UIResponder.keyboardWillChangeFrameNotification,
                                                object: nil)
 
-        // Dismiss keyboard on scroll/tap
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         baseView.collectionView.addGestureRecognizer(tap)
     }
 
-    // MARK: - Bindings
     private func setupBindings() {
         viewModel.onUpdate = { [weak self] in self?.buildUI() }
         viewModel.onError = { [weak self] msg in self?.showError(msg) }
@@ -53,12 +50,11 @@ final class RecommendationChatViewController: BaseCollectionViewController {
         }
     }
 
-    // MARK: - UI Build
     private func buildUI() {
-        // 1) Messages
+ 
         messagesSection.rows = viewModel.uiRows()
 
-        // 2) Categories
+
         categorySections = viewModel.categories.map { cat in
             var s = Section(layoutType: .vertical, rows: [])
             s.rows.append(MovieSectionViewModel(title: cat.title, movies: cat.movies))
@@ -90,7 +86,6 @@ final class RecommendationChatViewController: BaseCollectionViewController {
         )
     }
 
-    // MARK: - Mood Bar
     private func setupMoodBar() {
         view.addSubview(moodBar)
         moodBar.backgroundColor = .clear
@@ -132,7 +127,6 @@ final class RecommendationChatViewController: BaseCollectionViewController {
         viewModel.send(title.lowercased())
     }
 
-    // MARK: - Input Bar
     private func setupInputBar() {
         view.addSubview(inputContainer)
         inputContainer.backgroundColor = UIColor(white: 0.08, alpha: 1)

@@ -11,4 +11,4 @@ extension String {
         if s.contains("roman")                  { return "romantik" }
         return s.trimmingCharacters(in: .whitespaces)
     }
-}
+ }*/

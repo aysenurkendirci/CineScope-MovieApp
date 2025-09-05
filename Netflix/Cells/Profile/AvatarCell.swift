@@ -1,4 +1,3 @@
-// AvatarCell.swift
 import UIKit
 import SnapKit
 import SDWebImage
@@ -15,7 +14,7 @@ final class AvatarCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.layer.cornerRadius = 12
-        contentView.backgroundColor = UIColor(white: 0.12, alpha: 1)
+        contentView.clipsToBounds = true
 
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12
@@ -24,11 +23,11 @@ final class AvatarCell: UICollectionViewCell {
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
+
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     func configure(with vm: AvatarCellViewModel) {
         imageView.sd_setImage(with: vm.url,
-                              placeholderImage: UIImage(systemName: "person.circle"),
-                              options: [.retryFailed, .continueInBackground])
+                              placeholderImage: UIImage(systemName: "person.circle"))
     }
 }

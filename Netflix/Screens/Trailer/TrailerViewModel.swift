@@ -1,5 +1,5 @@
 import Foundation
-
+///state
 final class TrailerViewModel {
     var posterURL: String = ""
     var title: String = ""
@@ -10,10 +10,11 @@ final class TrailerViewModel {
     var cast: [Cast] = []
     var trailerURL: String = ""
 
-    func fetchMovieDetail(movieId: Int, completion: @escaping () -> Void) {
+    func fetchMovieDetail(movieId: Int, completion: @escaping () -> Void) { ///DispatchGroup ile 3 farklı servisi aynanda kullanabiliyorum
         let group = DispatchGroup()
-        
-        // Detail
+        ///completion  networkten sonra
+        ///
+        ///decode işlemleri
         group.enter()
         NetworkProvider.shared.request(.detail(movieId: movieId)) { [weak self] result in
             if case .success(let response) = result {
@@ -22,8 +23,8 @@ final class TrailerViewModel {
                     self?.posterURL = detail.posterURL ?? ""
                     self?.title = detail.title
                     self?.overview = detail.overview
-                    self?.rating = detail.vote_average
-                    self?.totalReviews = detail.vote_count
+                    self?.rating = detail.voteAverage
+                    self?.totalReviews = detail.voteCount
                 } catch {
                     print("Decode error (detail):", error)
                 }
@@ -31,7 +32,6 @@ final class TrailerViewModel {
             group.leave()
         }
         
-        // Credits
         group.enter()
         NetworkProvider.shared.request(.credits(movieId: movieId)) { [weak self] result in
             if case .success(let response) = result {
@@ -44,8 +44,6 @@ final class TrailerViewModel {
             }
             group.leave()
         }
-        
-        // Videos
         group.enter()
         NetworkProvider.shared.request(.videos(movieId: movieId)) { [weak self] result in
             if case .success(let response) = result {
